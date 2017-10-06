@@ -18,6 +18,10 @@ npm install
 npm start
 ```
 
+### Build Instructions
+
+    Will eventually be added once more code has arrived.
+
 ### End Goal
 
     [x] To have made a simple electron window running an http server utilizing a public www folder.
