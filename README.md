@@ -25,8 +25,8 @@ npm start
 ### End Goal
 
     [x] To have made a simple electron window running an http server utilizing a public www folder.
-    [ ] I would like to have statistics of requests via ajax inside the small window to show activity.
-    [ ] Like the simple version of apache that is zero-config.
+    [x] I would like to have statistics of requests via ajax inside the small window to show activity.
+    [x] Like the simple version of apache that is zero-config.
 
 #### Note
 
