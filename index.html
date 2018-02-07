@@ -6,27 +6,59 @@
   </head>
   <body>
     <h2>Simple Static Server</h2>
-    <p>Server should be running on http://0.0.0.0:8080</p>
+    <p>Server is running on http://0.0.0.0:8080</p>
     <p>The folder being served is ./www</p>
+    <p id='impressions'></p>
   </body>
   <script>
+    /**
+     * Fetch stats api.
+     **/
+    const fetchImpressions = () => {
+      let element = document.getElementById('impressions');
+      fetch('http://127.0.0.1:8080/api/count')
+      .then((res) => {
+        let text = res.text();
+        return text;
+      })
+      .then((text) => {
+        element.innerHTML = "Impressions: " + text;
+      });
+    };
 
+    fetchImpressions();
+
+    const timer = setInterval(() => {
+      fetchImpressions();
+    }, 5000);
+
+
+    /**
+     * Our express server.
+     **/
     require('./renderer.js');
 
-    var running = false;
-    var express = require('express');
-    var app = express();
+    const express = require('express');
+    const app = express();
+
+    let count = 0;
+
+    app.get('/api/count', (req, res) => {
+      res.send(count.toString());
+    });
+
+    app.use((req, res, next) => {
+      count++;
+      res.locals.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      console.log('FROM: ' + res.locals.ip + ' ON: ' + req.originalUrl);
+      next();
+    });
 
     app.use(express.static('www'));
+
     app.listen(8080, function () {
-      running = true;
       console.log('Server is listening on http://0.0.0.0:8080')
     });
 
-    if(running) {
-      // do stuff
-    }
-    // add some checking to see if express is running
-    // if so, display some information in the window
   </script>
 </html>
