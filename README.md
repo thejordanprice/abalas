@@ -9,9 +9,9 @@ It does currently however make for a decent static file server.
 
 ```bash
 # Clone this repository
-git clone https://github.com/thejordanprice/simple-express-server
+git clone https://github.com/thejordanprice/abalas
 # Go into the repository
-cd simple-static-server
+cd abalas
 # Install dependencies
 npm install
 # Run the app
