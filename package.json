@@ -1,12 +1,12 @@
 {
-  "name": "simple-static-server",
-  "version": "0.0.1",
+  "name": "ABALAS",
+  "version": "0.1.0",
   "description": "A minimalistic http static file server.",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/thejordanprice/simple-static-server",
+  "repository": "https://github.com/thejordanprice/abalas",
   "author": "Jordan Price",
   "license": "MIT",
   "dependencies": {

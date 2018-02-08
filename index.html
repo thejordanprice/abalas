@@ -3,39 +3,31 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="./private/bootstrap.min.css" rel="stylesheet">
+    <link href="./private/css/bootstrap.min.css" rel="stylesheet">
     <title>ABALAS</title>
   </head>
   <body>
-    <div class='container'>
-      <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <a class="navbar-brand" href="#">ABALAS</a>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="./index.html">Statistics</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>
-      </nav>
-      <div class='text-center'>
-        <pre>A Browser Acting Like A Server.</pre>
-        <p>Server is running on http://127.0.0.1:8080</p>
-        <p>The folder being served is ./www</p>
-        <p id='impressions'></p>
+    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+      <a class="navbar-brand" href="#">ABALAS</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link active" id="statistics-nav">Statistics</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./index.html">Restart</a>
+          </li>
+        </ul>
       </div>
+    </nav>
+    <div class='text-center'>
+      <pre>A Browser Acting Like A Server.</pre>
+      <pre>Server is running on <a href="http://127.0.0.1:8080" target="_new">http://127.0.0.1:8080</a></pre>
+      <pre>The folder being served is ./www</pre>
+      <pre id='impressions'></pre>
     </div>
   </body>
-  <script href='./private/jquery-3.1.1.slim.min.js'></script>
-  <script href='./private/tether.min.js'></script>
-  <script href='./private/bootstrap.js'></script>
+  <script href='./private/js/bootstrap.min.js'></script>
   <script>
     /**
      * Create www folder if it doesn't exist.
@@ -56,19 +48,18 @@
     /**
      * Run the function to make sure it exists.
      **/
+    let element = document.getElementById('impressions');
     checkDirectory("./www/", (error) => {  
       if (error) {
         /**
          * Throw error for www folder.
          **/
-        let element = document.getElementById('impressions');
         element.innerHTML = "Create a './www' folder...";
       } else {
         /**
          * Fetch stats API.
          **/
         const fetchImpressions = () => {
-          let element = document.getElementById('impressions');
           fetch('http://127.0.0.1:8080/api/count')
           .then((res) => {
             let text = res.text();
@@ -76,7 +67,10 @@
           })
           .then((text) => {
             element.innerHTML = "Impressions: " + text;
-          });
+          })
+          .catch((err) => {
+            element.innerHTML = "Something has gone wrong with API.";
+          })
         };
 
         fetchImpressions();
