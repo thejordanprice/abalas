@@ -6,6 +6,8 @@ Currently the status window isn't exactly useful; but soon.
 
 It does currently however make for a decent static file server.
 
+![Screenshot](https://i.imgur.com/bgbvSwQ.png)
+
 ### Starting Development
 
 ```bash
