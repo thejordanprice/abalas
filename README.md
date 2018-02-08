@@ -1,4 +1,5 @@
-# simple-static-server
+# ABALAS
+*A browser acting like a server...*
 
 This is a simple static file server with a status window.
 Currently the status window isn't exactly useful; but soon.
