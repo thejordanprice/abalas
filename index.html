@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script>
+      /**
+      * Settings for server available.
+      **/
+      const address = '127.0.0.1';
+      const port = 80;
+      const tlsport = 443;    
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="./private/css/bootstrap.min.css" rel="stylesheet">
@@ -8,27 +16,38 @@
   </head>
   <body>
     <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <a class="navbar-brand" href="#">ABALAS</a>
+      
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link active" id="statistics-nav">Statistics</a>
+            <a class="nav-link" href="http://127.0.0.1:80/status" target="_blank">Stats</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="./index.html">Restart</a>
-          </li>
+              <a class="nav-link" href="/index.html">Restart</a>
+            </li>
         </ul>
       </div>
     </nav>
     <div class='text-center'>
       <pre>A Browser Acting Like A Server.</pre>
-      <pre>Server is running on <a href="http://127.0.0.1:8080" target="_new">http://127.0.0.1:8080</a></pre>
+      <pre>Server is running on <a id="urlhref" target="_blank"></a></pre>
       <pre>The folder being served is ./www</pre>
-      <pre id='impressions'></pre>
+      <pre id='stats'></pre>
     </div>
+    <script href='./private/js/bootstrap.min.js'></script>
   </body>
-  <script href='./private/js/bootstrap.min.js'></script>
   <script>
+    /**
+     * Soon SSL Settings
+     **/
+
+    // Don't change this.
+    const homeurl = ('http://' + address + ':' + port).toString();
+
     /**
      * Create www folder if it doesn't exist.
      **/
@@ -41,14 +60,15 @@
         } else {
           // Just in case there was a different error:
           callback(err);
-        }
+        };
       });
     };
 
     /**
      * Run the function to make sure it exists.
      **/
-    let element = document.getElementById('impressions');
+    let urlhref = document.getElementById('urlhref');
+    let element = document.getElementById('stats');
     checkDirectory("./www/", (error) => {  
       if (error) {
         /**
@@ -60,13 +80,15 @@
          * Fetch stats API.
          **/
         const fetchImpressions = () => {
-          fetch('http://127.0.0.1:8080/api/count')
+          fetch(homeurl + '/api/count')
           .then((res) => {
             let text = res.text();
             return text;
           })
           .then((text) => {
             element.innerHTML = "Impressions: " + text;
+            urlhref.innerHTML = homeurl + '/';
+            urlhref.href = homeurl + '/index.html';
           })
           .catch((err) => {
             element.innerHTML = "Something has gone wrong with API.";
@@ -96,6 +118,11 @@
       res.send(count.toString());
     });
 
+    const auth = require('http-auth');
+    const basic = auth.basic({realm: 'Monitor Area'}, function(user, pass, callback) {
+      callback(user === 'username' && pass === 'password');
+    });
+
     app.use((req, res, next) => {
       count++;
       res.locals.ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -105,8 +132,12 @@
 
     app.use(express.static('./www'));
 
-    app.listen(8080, () => {
-      console.log('Server is listening on http://0.0.0.0:8080')
+    const statusMonitor = require('express-status-monitor')({ path: '/status' });
+    app.use(statusMonitor.middleware);
+    app.get('/status', auth.connect(basic), statusMonitor.pageRoute);
+
+    app.listen(port, () => {
+      console.log('Server is listening on ' + homeurl)
     });
   </script>
 </html>
